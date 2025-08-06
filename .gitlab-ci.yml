@@ -8,7 +8,7 @@ variables:
   GCP_REGION: "us-central1"
   SERVICE_NAME: "cloudrun-deploy-gitlabci"
   ARTIFACT_REPO: "cloudrun-cicd-images"
-  IMAGE_NAME: "$GCP_REGION-docker.pkg.dev/$GCP_PROJECT_ID/$ARTIFACT_REPO/$SERVICE_NAME"
+  IMAGE_NAME: ""
   ENTRY_POINT: "gcpFunctionTesteCICD"
   ENV_FILE: "./env.json"
   SERVICE_ACCOUNT: ""

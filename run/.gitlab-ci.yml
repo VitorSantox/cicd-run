@@ -1,0 +1,29 @@
+image: google/cloud-sdk:slim
+
+stages:
+  - deploy
+
+variables:
+  GCP_PROJECT_ID: "devplayground"
+  GCP_REGION: "us-central1"
+  SERVICE_NAME: "cloudrun-deploy-gitlabci"
+  ARTIFACT_REPO: "cloudrun-cicd-images"
+  IMAGE_NAME: "$GCP_REGION-docker.pkg.dev/$GCP_PROJECT_ID/$SERVICE_NAME"
+
+deploy-cloud-run:
+  stage: deploy
+  script:
+    # Autentica com a chave de serviço
+    - gcloud auth activate-service-account --key-file=secret/key.json
+    - gcloud config set project $GCP_PROJECT_ID
+    - gcloud config set run/region $GCP_REGION
+
+    # Build da imagem e push para Container Registry (ou Artifact Registry)
+    - gcloud builds submit --tag $IMAGE_NAME .
+
+    # Deploy no Cloud Run (sem autenticação)
+    - gcloud run deploy $SERVICE_NAME \
+        --image $IMAGE_NAME \
+        --platform managed \
+        --region $GCP_REGION \
+        --allow-unauthenticated
